@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfoIP.io - Check Your IP Address & Location</title>
+  <meta name="description" content="InfoIP.io lets you check your public IP address, country, city, ISP, and timezone instantly for free. No signup required." />
+  <meta name="keywords" content="Check IP, My IP, IP address lookup, IP location, ISP info, timezone" />
+  <meta name="robots" content="index, follow" />
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+
+<div class="container">
+    <h3> Check My IP & Info </h3>
+    <p class="l"><strong>IP Address:</strong> <span id="ip">Loading...</span></p>
+    <p><strong>Country:</strong> <span id="country">Loading...</span></p>
+    <p><strong>City:</strong> <span id="city">Loading...</span></p>
+    <p><strong>ISP:</strong> <span id="isp">Loading...</span></p>
+    <p><strong>timezone:</strong> <span id="timezone">Loading...</span></p>
+</div>
+
+    <script>
+        window.onload = function() {
+            fetch('https://ipapi.co/json/')
+            .then(Response => Response.json())
+            .then(data => {
+                document.getElementById('ip').textContent = data.ip || 'ไม่พบข้อมูล';
+                document.getElementById('country').textContent = data.country_name || 'ไม่พบข้อมูล';
+                document.getElementById('city').textContent = data.city || 'ไม่พบข้อมูล';
+                document.getElementById('timezone').textContent = data.timezone || 'ไม่พบข้อมูล';
+                document.getElementById('isp').textContent = data.org || 'ไม่พบข้อมูล';
+
+            })
+        }
+    </script>
+</body>
+</html>
